@@ -20,8 +20,14 @@ protoc: ## Proto-Compiler for Go
 mod: ## Install modules
 	@go mod tidy
 server: ## Start Server
-	@go run server/main.go
+	@docker-compose exec go go run cmd/server/main.go
 client: ## Start Client
 	@go run client/main.go
 middleware: ## Install go-grpc-middleware
 	@go get github.com/grpc-ecosystem/go-grpc-middleware
+service: ## Show Service-list
+	@docker compose run grpcurl -plaintext go:8080 list
+method: ## Show Method-list
+	@docker compose run grpcurl -plaintext go:8080 list myapp.GreetingService
+callmethod: ## Call Method
+	@docker compose run grpcurl -plaintext -d '{"name": "hsaki"}' go:8080 myapp.GreetingService.Hello

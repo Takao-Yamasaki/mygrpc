@@ -1,10 +1,12 @@
-version: '3'
+version: '3.8'
 services:
   go:
     build: .
     ports:
-      - "3002:3002"
+      - "8080:8080"
     tty: true
     volumes:
       - .:/go/src/project
     working_dir: /go/src/project
+  grpcurl:
+    image: fullstorydev/grpcurl:latest

@@ -2,7 +2,7 @@ FROM golang:1.18-alpine
 
 ENV ROOT=/go/src/project
 
-RUN apk add --no-cache protobuf
+RUN apk add --no-cache protobuf make
 
 WORKDIR /go/src/project
 
