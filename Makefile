@@ -1,4 +1,4 @@
-.PHONY: help go unary server install client
+.PHONY: help go unary server install client protoc
 help: ## Display this help screen
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 open: ## Open DevContaienr
@@ -14,7 +14,9 @@ install: ## Install Go Plugin for Protobuf
 ps: ## Check Container Status
 	@docker-compose ps
 protoc: ## Proto-Compiler for Go 
-	@protoc -I. --go_out=. --go-grpc_out=. proto/*.proto
+	@protoc --go_out=pkg/grpc --go_opt=paths=source_relative \
+			--go-grpc_out=pkg/grpc --go-grpc_opt=paths=source_relative \
+      api/hello.proto
 mod: ## Install modules
 	@go mod tidy
 server: ## Start Server
