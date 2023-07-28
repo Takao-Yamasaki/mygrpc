@@ -17,6 +17,12 @@ protoc: ## Proto-Compiler for Go
 	@protoc --go_out=pkg/grpc --go_opt=paths=source_relative \
 			--go-grpc_out=pkg/grpc --go-grpc_opt=paths=source_relative \
       api/hello.proto
+build-prod: ## Build Image for Production
+	@docker build --target prod -t mygrpc:latest .
+run-prod: ## Start Container for Production
+	@docker run -d --name mygrpc -p 8080:8080 mygrpc:latest
+exec-prod: ## Login Container for Production
+	@docker exec -it mygrpc sh
 mod: ## Install modules
 	@go mod tidy
 server: ## Start Server

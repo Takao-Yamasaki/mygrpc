@@ -17,11 +17,11 @@ RUN go mod download \
   && CGO=ENABLED=0 GOOS=linux go build -o server ./cmd/server
 
 # prod用のコンテナ
-FROM alpine:3.15.4
+FROM alpine:3.15.4 as prod
 ENV ROOT=/go/src/project
 WORKDIR ${ROOT}
 
-RUN addgroup -S dockergroup && add user -S docker -G dockergroup
+RUN addgroup -S dockergroup && adduser -S docker -G dockergroup
 USER docker
 
 COPY --from=build ${ROOT}/server ${ROOT}
