@@ -1,7 +1,9 @@
 version: '3.8'
 services:
   go:
-    build: .
+    build: 
+      context: .
+      target: base
     ports:
       - "8080:8080"
     tty: true
