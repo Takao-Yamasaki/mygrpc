@@ -19,3 +19,8 @@ data "aws_subnet" "myecs_provate" {
 data "aws_acm_certificacte" "myecs" {
   domain = var.domain_name
 }
+
+# ECRリポジトリ
+data "aws_ecr_repository" "myecs" {
+  name = var.ecr_repo_name
+}
