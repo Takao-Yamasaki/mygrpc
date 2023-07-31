@@ -55,3 +55,61 @@ resource "aws_security_group" "myecs_alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+# タスク定義
+resource "aws_ecs_task_definition" "myecs" {
+  family = json("-", [var.base_name, "task", "definition"])
+  requires_compatibilities = ["FARGATE"]
+
+  network_mode = "awsvpc"
+  cpu = 256
+  memory = 512
+  
+  container_definitions = jsonencode([
+    {
+      name = "gRPC-server"
+      image = "${data.aws_ecr_repository.myecs.repository_url}:${var.image_tag}"
+      essential = true
+      portMappings = [
+        {
+          containerPort = 8080
+          hostPort = 8080
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awsfirelens"
+        options = {
+          Name = "cloudwatch"
+          region = var.region
+          log_group_name = join("/",["ecs", var.base_name])
+          log_stream_prefix = "grpc"
+        }
+      }
+    },
+    {
+      name = "log-router"
+      image = "public.ecr.aws/aws-observability/aws-for-fluent-bit:stable"
+      essential = true
+      
+      firelensConfigurations = {
+        type = "fluentbit"
+        options = {
+          enable-ecs-log-metadata = "true"
+          config-file-type = "file"
+          config-file-value = "/fluent-bit/configs/parse-json.conf"
+        }
+      }
+    }
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        awslogs-region = var.region
+        awslogs-group = join("/", ["escs", var.base_name])
+        awslogs-stream-prefix = "logger"
+      }
+    }
+  ])
+
+  execution_role_arn = aws_iam_role.myecs_task_execution_role.arn
+  task_role_arn = aws_iam_role.myecs_task_role.arn
+}
