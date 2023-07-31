@@ -113,3 +113,26 @@ resource "aws_ecs_task_definition" "myecs" {
   execution_role_arn = aws_iam_role.myecs_task_execution_role.arn
   task_role_arn = aws_iam_role.myecs_task_role.arn
 }
+
+
+# タスク実行ロール
+resource "aws_iam_role" "myecs_task_execution_role" {
+  name = join("-", [var.base_name,"execution-role"])
+  assume_role_policy = data.aws_iam_policy_document.myecs_task_execution_assume_policy.json
+}
+
+data "aws_iam_policy_document" "myecs_task_execution_assume_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "myecs_task_execution_policy" {
+  role = aws_iam_role.myecs_task_execution_role.name
+  policy_arn = "arn:aws:iam:aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
