@@ -1,3 +1,111 @@
+provider "aws" {
+  region = "ap-northeast-1"
+}
+
+# VPCの作成
+resource "aws_vpc" "myecs" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns_support = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "myecs"
+  }
+}
+
+# インターネットゲートウェイの作成
+resource "aws_internet_gateway" "myecs_igw" {
+  vpc_id = aws_vpc.myecs.id
+
+  tags = {
+    Name = "myecs_igw"
+  }
+}
+
+# パブリックサブネットの作成
+resource "aws_subnet" "myecs_public" {
+  vpc_id = aws_vpc.myecs.id
+  cidr_block = "10.0.1.0/24"
+  map_public_ip_on_launch = true
+  
+  tags = {
+    Name = "myecs_public"
+  }
+}
+
+# プライベートサブネットの作成
+resource "aws_subnet" "myecs_private" {
+  vpc_id = aws_vpc.myecs.id
+  cidr_block = "10.0.2.0/24"
+
+  tags = {
+    Name = "myecs_private"
+  }
+}
+
+# ルートテーブルの作成
+resource "aws_route_table" "myecs_route_table" {
+  vpc_id = aws_vpc.myecs.id
+  
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.myecs_igw.id
+  }
+
+  tags = {
+    Name = "myecs_route_table"
+  }
+}
+
+# パブリックサブネットとルートテーブルの関連付け
+resource "aws_route_table_association" "public" {
+  subnet_id = aws_subnet.myecs_public.id
+  route_table_id = aws_route_table.myecs_route_table.id
+}
+
+# ホストゾーンの参照
+data "aws_route53_zone" "myecs" {
+  name = "zackzack.link"
+}
+
+# DNSレコードの定義
+resource "aws_route53_record" "myecs" {
+  zone_id = data.aws_route53_zone.myecs.zone_id
+  name = data.aws_route53_zone.myecs.name
+  type = "A"
+
+  alias {
+    # ALBの設定
+    name = aws_lb.myecs.dns_name
+    zone_id = aws_lb.myecs.zone_id
+    evaluate_target_health = true
+  }
+}
+
+output "domain_name" {
+  value = aws_route53_record.myecs.name
+}
+
+# SSL証明書の作成
+resource "aws_acm_certificate" "myecs" {
+  domain_name = aws_route53_record.myecs.name
+  subject_alternative_names = []
+  validation_method = "DNS"
+
+  # ライフサイクル
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# 検証用DNSレコードの定義
+resource "aws_route53_record" "myecs_certificate" {
+  name = aws_acm_certificate.myecs.domain_validation_options[0].resource_record_name
+  type = aws_acm_certificate.myecs.domain_validation_options[0].resource_record_name
+  records = [aws_acm_sertificate.myecs.domain_vslidation_options[0].resource_record_value]
+  zone_id = data.aws_route53_zone.ezample.id
+}
+
 # ALBを作成
 resource "aws_lb" "myecs" {
   name = join("-", [var.base_name, "alb"])
@@ -8,7 +116,7 @@ resource "aws_lb" "myecs" {
 }
 
 # ALBリスナー
-resource "aws_ib_listener" "myecs" {
+resource "aws_alb_listener" "myecs" {
   load_balancer_arn = aws_lb.myecs.arn
   port = "443"
   protocol = "HTTPS"
@@ -139,7 +247,7 @@ resource "aws_iam_role_policy_attachment" "myecs_task_execution_policy" {
 
 # タスクロール
 resource "aws_iam_role" "myecs_task_role" {
-  name = json("-", [var.base_name, "role"])
+  name = join("-", [var.base_name, "role"])
   assume_role_policy = data.aws_iam_policy_document.myecs_task_assume_policy.json
 }
 
@@ -219,7 +327,7 @@ resource "aws_security_group" "myecs_service" {
     from_port = 8080
     to_port = 8080
     protocol = "tcp"
-    security_group = [aws_security_group.myecs_alb.id]
+    security_groups = [aws_security_group.myecs_alb.id]
   }
 }
 
