@@ -1,3 +1,5 @@
 terraform.tfvars
-envs/prd/.terraform
-.terraform.lock.hcl
+ecs/prd/.terraform
+ecs/prd/.terraform.lock.hcl
+network/prd/.terraform
+network/prd/.terraform.lock.hcl
