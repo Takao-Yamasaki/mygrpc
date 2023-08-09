@@ -8,7 +8,7 @@ resource "aws_lb" "myecs" {
 }
 
 # ALBリスナー
-resource "aws_alb_listener" "myecs" {
+resource "aws_lb_listener" "myecs" {
   load_balancer_arn = aws_lb.myecs.arn
   port = "443"
   protocol = "HTTPS"
@@ -134,7 +134,7 @@ data "aws_iam_policy_document" "myecs_task_execution_assume_policy" {
 
 resource "aws_iam_role_policy_attachment" "myecs_task_execution_policy" {
   role = aws_iam_role.myecs_task_execution_role.name
-  policy_arn = "arn:aws:iam:aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 # タスクロール
@@ -174,7 +174,7 @@ data "aws_iam_policy_document" "myecs_task_policy" {
 
 resource "aws_iam_role_policy_attachment" "myecs_task_role" {
   role = aws_iam_role.myecs_task_role.name
-  policy = aws_iam_policy.myecs_task_policy.arn
+  policy_arn = aws_iam_policy.myecs_task_policy.arn
 }
 
 # サービス定義
@@ -182,15 +182,15 @@ resource "aws_ecs_service" "myecs" {
   name = join("-", [var.base_name, "service"])
   cluster = aws_ecs_cluster.myecs.id
   
-  task_definition = aws_ecs_taskdefinition.myecs.arn
-  desierd_count = 1
+  task_definition = aws_ecs_task_definition.myecs.arn
+  desired_count = 1
   launch_type = "FARGATE"
   
   depends_on = [aws_lb_listener.myecs]
 
   # タスクコンテナをどのALBのターゲットグループに指定するか
   load_balancer {
-    target_group_arn = aws_lb_target_group_myecs.arn
+    target_group_arn = aws_lb_target_group.myecs.arn
     container_name = "gRPC-server"
     container_port = "8080"
   }
