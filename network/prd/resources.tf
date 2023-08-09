@@ -31,6 +31,7 @@ resource "aws_subnet" "myecs_public_1" {
   
   tags = {
     Name = "myecs_public_1"
+    Type = "Public"
   }
 }
 
@@ -43,6 +44,7 @@ resource "aws_subnet" "myecs_public_2" {
   
   tags = {
     Name = "myecs_public_2"
+    Type = "Public"
   }
 }
 
@@ -53,6 +55,7 @@ resource "aws_subnet" "myecs_private_1" {
 
   tags = {
     Name = "myecs_private_1"
+    Type = "Private"
   }
 }
 
@@ -63,6 +66,7 @@ resource "aws_subnet" "myecs_private_2" {
 
   tags = {
     Name = "myecs_private_2"
+    Type = "Private"
   }
 }
 

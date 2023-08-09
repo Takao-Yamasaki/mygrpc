@@ -37,11 +37,11 @@ aws configure
 AWS CLIを使用して、レポジトリを作成
 - ECRを作成
 ```
-aws ecr create-repository --repository-name mygrpc
+aws ecr create-repository --repository-name myecs
 ```
 - ECRが作成されたかどうか確認。プライベートリポジトリに作成される。
 ```
-aws ecr describe-repositories --repository-name mygrpc
+aws ecr describe-repositories --repository-name myecs
 ```
 
 ## イメージをECRにプッシュ
