@@ -70,7 +70,7 @@ resource "aws_ecs_task_definition" "myecs" {
       name = "gRPC-server"
       image = "${data.aws_ecr_repository.myecs.repository_url}:${var.image_tag}"
       essential = true
-      port_mappings = [
+      portMappings = [
         {
           containerPort = 8080
           hostPort = 8080
@@ -117,7 +117,7 @@ resource "aws_ecs_task_definition" "myecs" {
 
 # タスク実行ロール
 resource "aws_iam_role" "myecs_task_execution_role" {
-  name = join("-", [var.base_name,"execution-role"])
+  name = join("-", [var.base_name, "execution-role"])
   assume_role_policy = data.aws_iam_policy_document.myecs_task_execution_assume_policy.json
 }
 
@@ -139,23 +139,23 @@ resource "aws_iam_role_policy_attachment" "myecs_task_execution_policy" {
 
 # タスクロール
 resource "aws_iam_role" "myecs_task_role" {
-  name = join("-", [var.base_name, "role"])
+  name               = join("-", [var.base_name, "role"])
   assume_role_policy = data.aws_iam_policy_document.myecs_task_assume_policy.json
 }
 
 data "aws_iam_policy_document" "myecs_task_assume_policy" {
   statement {
     actions = ["sts:AssumeRole"]
-    
-    principals{
-      type = "Service"
+
+    principals {
+      type        = "Service"
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
   }
 }
 
 resource "aws_iam_policy" "myecs_task_policy" {
-  name = join("-", [var.base_name, "policy"])
+  name   = join("-", [var.base_name, "policy"])
   policy = data.aws_iam_policy_document.myecs_task_policy.json
 }
 
@@ -164,16 +164,16 @@ data "aws_iam_policy_document" "myecs_task_policy" {
     actions = [
       "logs:CreateLogStream",
       "logs:CreateLogGroup",
-      "logs:DescribeLogStream",
+      "logs:DescribeLogStreams",
       "logs:PutLogEvents",
     ]
-    effect = "Allow"
+    effect    = "Allow"
     resources = ["*"]
   }
 }
 
 resource "aws_iam_role_policy_attachment" "myecs_task_role" {
-  role = aws_iam_role.myecs_task_role.name
+  role       = aws_iam_role.myecs_task_role.name
   policy_arn = aws_iam_policy.myecs_task_policy.arn
 }
 
