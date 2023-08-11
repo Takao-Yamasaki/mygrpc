@@ -40,7 +40,7 @@ data "aws_acm_certificate" "myecs" {
 
 # ECRリポジトリ
 data "aws_ecr_repository" "myecs" {
-  name = "myecs"
+  name = var.ecr_repo_name
 }
 
 # base_name
@@ -61,5 +61,7 @@ variable "image_tag" {
   default = "latest"
 }
 
-
-# TODO: 証明書の設定
+variable "ecr_repo_name" {
+  type = string
+  default = "myecs"
+}
