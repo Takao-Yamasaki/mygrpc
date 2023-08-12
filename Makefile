@@ -37,3 +37,6 @@ method: ## Show Method-list
 	@docker compose run grpcurl -plaintext go:8080 list myapp.GreetingService
 callmethod: ## Call Method
 	@docker compose run grpcurl -plaintext -d '{"name": "hsaki"}' go:8080 myapp.GreetingService.Hello
+service-prod: ## Show Service-list for Prod
+	@docker-compose run grpcurl -plaintext myecs-alb-536880644.ap-northeast-1.elb.amazonaws.com:8080 list
+
