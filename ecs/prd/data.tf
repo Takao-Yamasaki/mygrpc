@@ -1,12 +1,11 @@
 # ALBを動かしたいVPCの設定
 data "aws_vpc" "myecs" {
-  # TODO: こネットワーク作成後手入力すること
-  id = "vpc-0a6e1812512cc1e51"
+  # TODO: ネットワーク作成後手入力すること
+  id = "vpc-03d11da613fed0e43"
 }
 
 # ルートテーブル
 data "aws_route_table" "myecs_route_table" {
-  # TODO: ネットワーク作成後手入力すること
   vpc_id = data.aws_vpc.myecs.id
 
   tags = {
