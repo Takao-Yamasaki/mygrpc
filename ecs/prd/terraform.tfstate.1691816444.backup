@@ -1,7 +1,7 @@
 {
   "version": 4,
   "terraform_version": "1.4.6",
-  "serial": 230,
+  "serial": 227,
   "lineage": "1ba56e52-cc9f-234f-0000-61b5a6d27037",
   "outputs": {},
   "resources": [
@@ -151,46 +151,6 @@
     },
     {
       "mode": "data",
-      "type": "aws_iam_policy_document",
-      "name": "myecs_task_policy",
-      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "id": "3612703358",
-            "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"logs:PutLogEvents\",\n        \"logs:DescribeLogStreams\",\n        \"logs:CreateLogStream\",\n        \"logs:CreateLogGroup\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}",
-            "override_policy_documents": null,
-            "policy_id": null,
-            "source_policy_documents": null,
-            "statement": [
-              {
-                "actions": [
-                  "logs:CreateLogGroup",
-                  "logs:CreateLogStream",
-                  "logs:DescribeLogStreams",
-                  "logs:PutLogEvents"
-                ],
-                "condition": [],
-                "effect": "Allow",
-                "not_actions": [],
-                "not_principals": [],
-                "not_resources": [],
-                "principals": [],
-                "resources": [
-                  "*"
-                ],
-                "sid": ""
-              }
-            ],
-            "version": "2012-10-17"
-          },
-          "sensitive_attributes": []
-        }
-      ]
-    },
-    {
-      "mode": "data",
       "type": "aws_subnets",
       "name": "myecs_private",
       "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
@@ -301,6 +261,125 @@
     },
     {
       "mode": "managed",
+      "type": "aws_ecs_cluster",
+      "name": "myecs",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ecs:ap-northeast-1:786832920677:cluster/myecs-cluster",
+            "configuration": [],
+            "id": "arn:aws:ecs:ap-northeast-1:786832920677:cluster/myecs-cluster",
+            "name": "myecs-cluster",
+            "service_connect_defaults": [],
+            "setting": [
+              {
+                "name": "containerInsights",
+                "value": "disabled"
+              }
+            ],
+            "tags": {},
+            "tags_all": {}
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_ecs_service",
+      "name": "myecs",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "alarms": [],
+            "capacity_provider_strategy": [],
+            "cluster": "arn:aws:ecs:ap-northeast-1:786832920677:cluster/myecs-cluster",
+            "deployment_circuit_breaker": [
+              {
+                "enable": false,
+                "rollback": false
+              }
+            ],
+            "deployment_controller": [
+              {
+                "type": "ECS"
+              }
+            ],
+            "deployment_maximum_percent": 200,
+            "deployment_minimum_healthy_percent": 100,
+            "desired_count": 1,
+            "enable_ecs_managed_tags": false,
+            "enable_execute_command": false,
+            "force_new_deployment": null,
+            "health_check_grace_period_seconds": 0,
+            "iam_role": "/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS",
+            "id": "arn:aws:ecs:ap-northeast-1:786832920677:service/myecs-cluster/myecs-service",
+            "launch_type": "FARGATE",
+            "load_balancer": [
+              {
+                "container_name": "gRPC-server",
+                "container_port": 8080,
+                "elb_name": "",
+                "target_group_arn": "arn:aws:elasticloadbalancing:ap-northeast-1:786832920677:targetgroup/myecs-tg/007406a83710a704"
+              }
+            ],
+            "name": "myecs-service",
+            "network_configuration": [
+              {
+                "assign_public_ip": false,
+                "security_groups": [
+                  "sg-026c0d2e84066c159"
+                ],
+                "subnets": [
+                  "subnet-085cf5810a81f2d81",
+                  "subnet-0ec637dacca851238"
+                ]
+              }
+            ],
+            "ordered_placement_strategy": [],
+            "placement_constraints": [],
+            "platform_version": "LATEST",
+            "propagate_tags": "NONE",
+            "scheduling_strategy": "REPLICA",
+            "service_connect_configuration": [],
+            "service_registries": [],
+            "tags": {},
+            "tags_all": {},
+            "task_definition": "arn:aws:ecs:ap-northeast-1:786832920677:task-definition/myecs-task-definition:7",
+            "timeouts": null,
+            "triggers": {},
+            "wait_for_steady_state": false
+          },
+          "sensitive_attributes": [],
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_ecs_cluster.myecs",
+            "aws_ecs_task_definition.myecs",
+            "aws_iam_role.myecs_task_execution_role",
+            "aws_iam_role.myecs_task_role",
+            "aws_lb.myecs",
+            "aws_lb_listener.myecs",
+            "aws_lb_target_group.myecs",
+            "aws_security_group.myecs_alb",
+            "aws_security_group.myecs_service",
+            "data.aws_acm_certificate.myecs",
+            "data.aws_ecr_repository.myecs",
+            "data.aws_iam_policy_document.myecs_task_assume_policy",
+            "data.aws_iam_policy_document.myecs_task_execution_assume_policy",
+            "data.aws_subnets.myecs_private",
+            "data.aws_subnets.myecs_public",
+            "data.aws_vpc.myecs"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
       "type": "aws_ecs_task_definition",
       "name": "myecs",
       "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
@@ -362,7 +441,9 @@
             "force_detach_policies": false,
             "id": "myecs-execution-role",
             "inline_policy": [],
-            "managed_policy_arns": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+            ],
             "max_session_duration": 3600,
             "name": "myecs-execution-role",
             "name_prefix": "",
@@ -396,7 +477,9 @@
             "force_detach_policies": false,
             "id": "myecs-role",
             "inline_policy": [],
-            "managed_policy_arns": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::786832920677:policy/myecs-policy"
+            ],
             "max_session_duration": 3600,
             "name": "myecs-role",
             "name_prefix": "",
