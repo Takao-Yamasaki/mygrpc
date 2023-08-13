@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #  Local .terraform directories
 **/.terraform/*
 
@@ -7,3 +8,9 @@
 
 # .tfvars files
 *.tfvars
+=======
+ecs/prd/.terraform
+ecs/prd/.terraform.lock.hcl
+network/prd/.terraform
+network/prd/.terraform.lock.hcl
+>>>>>>> origin/main
