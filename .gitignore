@@ -1,4 +1,9 @@
-ecs/prd/.terraform
-ecs/prd/.terraform.lock.hcl
-network/prd/.terraform
-network/prd/.terraform.lock.hcl
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars
