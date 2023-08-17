@@ -1,6 +1,9 @@
-name: Terraform CI
+name: tfvalidate
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
