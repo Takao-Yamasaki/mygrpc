@@ -73,7 +73,7 @@ make build-prod
 ### ACMでHTTPS化
 - マネージメントコンソールを使って、ACMでSSL証明書を発行しておく
 ### Terraformのインストール
-- Terraformのバージョン管理にtfenvを使用しているので、事前にインストールする
+- Terraformのバージョン管理に`tfenv`を使用しているので、事前にインストール(Mac OS)
 ```
 brew install tfenv
 ```
@@ -82,9 +82,9 @@ brew install tfenv
 tfenv install
 ```
 ### AWSへのデプロイ
-- `network/prd`配下:  VPCなどネットワーク関連のリソースを管理
-- `ecs/prd`配下:  ECSなどのサーバー関連のリソースを管理
-1. `network/prd`ディレクトリに移動
+- `terraform/network/prd`配下:  VPCなどネットワーク関連のリソースを管理
+- `terraform/ecs/prd`配下:  ECSなどのサーバー関連のリソースを管理
+1. `terraform/network/prd`ディレクトリに移動
 ```
 cd network/prd
 ```
@@ -96,7 +96,7 @@ terraform plan
 ```
 terraform apply
 ```
-4. `ecs/prd`でも上の手順を繰り返す
+4. `terraform/ecs/prd`でも上の手順を繰り返す
 ## AWSの後片付け
 ```
 terraform destory
