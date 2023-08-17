@@ -25,6 +25,18 @@ make callmethod
 ```
 
 ## デプロイ手順
+### AWS Profile
+- `direnv`を使って、`terraform`配下に移動すると、AWS Profileが`terraform`に切り替わる
+- https://github.com/direnv/direnv
+- インストール(Mac OS)
+```
+brew install direnv
+```
+- direnvの実行を許可
+```
+direnv allow .
+```
+
 ### IAMユーザーの作成
 - IAMユーザーを作成しておくこと
 - AWS CLIを使用するので、IAM作成後、次のコマンドで認証設定をしておくこと
